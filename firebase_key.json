@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "freefire-almaz-bot-6686c",
+  "private_key_id": "ae0364e534b95a761f5efd31131484f0b724bc6e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCcWvapapbPaRwD\nqn8BAzV71ub9Wff3cxzc+m3ROUo+sbH614wVlmZbYYfAXoou7fKB1bleqW+Mx4Zm\n6U6HWkctrkQS+VzBrDDPziPKy4JvkrFzaHZslengTszpb0J/z5SndfZ+vk/BcfGJ\nIYu/cRzZdvRV/iqxu0Ng4G71cop1p3ME9iijW5r8M53ANnCmKP06xndhpFnPSm1L\niui4mz4YK7SrcdcR+fkuPsZ3Jl1qH4YdiIrFfhIgCsVlJO8K+uxZdLh+LcWP9w3z\nM1R+QIt/FL7/7XIjFi3E9zOnVpOWuB3gnVQ1tWaHXUa6XMf/HpypLVUopx/17dS8\nutNYVel/AgMBAAECggEALVZ1GtgVBeyRGoEIVcdT7WZ50XISpJalAnC9gkMuA7Ls\nDHQPIz1azdmgjwf64rPNs5dBKrFP7s72aoXxZu8nH5heFfBn1KL0/nTkTQwo9Ohg\n+zmJyV/JEulWosPH0R7kmJBsmwDdSJcdNinbh3YpqudC32KVh7boyUEa+6IsgwPI\nmQLhMB7mTqEZjC9H2frnuANB+H7wq58DzpEkET3733NFAeAL9LW4GPSi6mKSB7YO\nG4O6SaJ5fpiljl6I5+8BdjIc8lx/jCp70FDycLFy1ff2vHo3eggmsKhAVIpAGiwk\nNzKNQkzoQD9XA2uM3pJFFYrdSFcjypqdQzn8FGkxzQKBgQDMbPn5CmAmPpMkUx5m\n+ldrOAGD0x/Z3I6n9MGBttgOoWp+agYQrFYcFQ3hrm7qfXNSRp2kSat+PmT7UdXo\nm0eJEzyi9wirPY5+hz84umWTUgmIds+9kKW9+d6Xc+cd66npyVLGDBNNF8jgcIPX\nrzF7mGucuUijT+luKC1eisezFQKBgQDDzVFhwfJuaKwGA7e9B6zg/KIutJF09HEb\nkSvviEkBvJ1OFYtoW5vBsFrdbbEeXKoTlPAW4zed3o+RCcNb1mLbvOEQn+7EmH+p\n43ko+nnQkl0Iy4C0slgSLz3pfqhR1fixBLKG0qQC9rwrdoRejVpkWZN0udvxQ/K2\n/fYd3HifQwKBgFBvlNBMJ9cEiish1XWZjWovyFDRctfrc+pcYQOkKVFgbCG/oBFR\nbjRwiFzDoPr9T7IQ/RhWsHblICDPa4ayCqzB9/r7jtqqRvY8S0EL/sm/3uZmMYma\nb8zXk6EuRsM8JkhKIhqxR6ru7+h3/TiRw7upFra9JPq1h9kDUA7CNp+dAoGBAK4a\nSPzl2c124U9PyvcYdg5wVT22bYhTOqfKhAivZEtZDX67BYS7wFmPmJw/xzg6KTjU\nPE/9phyII5xR1BY7IRhGcNG5hDPnbc0AaWGYpuxg2LzTRxRlaI5y11hhuQVbf5DX\nnm7nqdLA1jzHW5g/lFqak9U81mdHhfBVDZ0rx03FAoGAMMB9DkIcIv1ZQ3Lhek7V\njUXLJOCfdKNenaufOP5cjUIy2h9De/wfgODQZyGy6WkmPWW4qoBvz1FJsWyfIXy/\nmdS/Pwd98EPtdS5kxAEYTrfowLRLSXhV5h6pv6T3apAffpAIcV6Giqlsh/zNnQGH\nZvfVZ9hTb7nIJEV0psM/UCQ=\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-fbsvc@freefire-almaz-bot-6686c.iam.gserviceaccount.com",
+  "client_id": "109964624057546909311",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-fbsvc%40freefire-almaz-bot-6686c.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
