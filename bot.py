@@ -197,7 +197,12 @@ def ai_resp(uid, msg):
     except Exception as e: return f"❌ AI xatosi: {e}"
 
 # ==================== FIREBASE ====================
-cred = credentials.Certificate("firebase_key.json")
+import json
+_fb_creds = os.getenv("FIREBASE_CREDENTIALS")
+if _fb_creds:
+    cred = credentials.Certificate(json.loads(_fb_creds))
+else:
+    cred = credentials.Certificate("firebase_key.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
