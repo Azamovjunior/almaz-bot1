@@ -17,8 +17,6 @@ from telegram.ext import (
     Application, CommandHandler, MessageHandler, CallbackQueryHandler,
     filters, ContextTypes, ConversationHandler
 )
-from flask import Flask
-from threading import Thread
 
 load_dotenv()
 logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s", level=logging.INFO)
@@ -227,9 +225,25 @@ async def check_subs(bot, uid):
         except: ns.append(ch)
     return ns
 
+# Firebase cache — so'rovlarni kamaytirish
+_user_cache = {}
+_cache_time = {}
+CACHE_TTL = 30  # 30 soniya cache
+
 def get_user(uid):
+    import time as _time
+    now = _time.time()
+    if uid in _user_cache and now - _cache_time.get(uid, 0) < CACHE_TTL:
+        return _user_cache[uid]
     d = uref(uid).get()
-    return d.to_dict() if d.exists else None
+    result = d.to_dict() if d.exists else None
+    _user_cache[uid] = result
+    _cache_time[uid] = now
+    return result
+
+def invalidate_cache(uid):
+    _user_cache.pop(uid, None)
+    _cache_time.pop(uid, None)
 
 def create_user(uid, full_name, username, phone, ff_id, ref_by=None):
     uref(uid).set({
@@ -241,6 +255,7 @@ def create_user(uid, full_name, username, phone, ff_id, ref_by=None):
         "joined_at": now_ts(), "is_banned": False, "ai_chat_mode": False,
         "total_earned": 0.0, "game_wins": 0, "game_losses": 0, "review_left": False,
     })
+    invalidate_cache(uid)
     if ref_by:
         try:
             if uref(ref_by).get().exists:
@@ -253,7 +268,9 @@ def create_user(uid, full_name, username, phone, ff_id, ref_by=None):
         except Exception as e: logger.error(f"Referal: {e}")
 
 def update_last_seen(uid):
-    try: uref(uid).update({"last_seen": now_ts(), "miss_you_sent": False})
+    try:
+        uref(uid).update({"last_seen": now_ts(), "miss_you_sent": False})
+        invalidate_cache(uid)
     except: pass
 
 def can_earn(data):
@@ -1990,24 +2007,7 @@ async def skip_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.pop("proof_w_id", None)
     await update.message.reply_text("✅ Isbot yuborish o'tkazib yuborildi.")
 
-# ==================== KEEP ALIVE (Railway uxlamasin) ====================
-flask_app = Flask(__name__)
-
-@flask_app.route('/')
-def home():
-    return "✅ Bot ishlayapti! 🚀"
-
-@flask_app.route('/health')
-def health():
-    return "OK", 200
-
-def run_flask():
-    flask_app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
-
-def keep_alive():
-    t = Thread(target=run_flask, daemon=True)
-    t.start()
-    logger.info("🌐 Flask server ishga tushdi!")
+# ==================== WEBHOOK SERVER ====================
 
 # ==================== MAIN ====================
 def main():
@@ -2086,15 +2086,31 @@ def main():
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
     # Background jobs
-    app.job_queue.run_repeating(remind_job,   interval=EARN_COOLDOWN,     first=60)
-    app.job_queue.run_repeating(miss_you_job, interval=MISS_YOU_INTERVAL, first=120)
+    # app.job_queue.run_repeating(remind_job,   interval=EARN_COOLDOWN,     first=60)  # Firebase limit tejash
+    # app.job_queue.run_repeating(miss_you_job, interval=MISS_YOU_INTERVAL, first=120)  # Firebase limit tejash
 
-    keep_alive()
-    logger.info("🚀 Bot ishga tushdi!")
-    app.run_polling(
-        drop_pending_updates=True,
-        allowed_updates=Update.ALL_TYPES
-    )
+    WEBHOOK_URL = os.getenv("RAILWAY_PUBLIC_DOMAIN") or os.getenv("WEBHOOK_URL")
+    PORT = int(os.environ.get("PORT", 8080))
+
+    if WEBHOOK_URL:
+        # WEBHOOK — eng tez usul
+        webhook_url = f"https://{WEBHOOK_URL}/{TELEGRAM_BOT_TOKEN}"
+        logger.info(f"🚀 Bot webhook da ishga tushdi: {webhook_url}")
+        app.run_webhook(
+            listen="0.0.0.0",
+            port=PORT,
+            url_path=TELEGRAM_BOT_TOKEN,
+            webhook_url=webhook_url,
+            drop_pending_updates=True,
+            allowed_updates=Update.ALL_TYPES
+        )
+    else:
+        # POLLING — local test uchun
+        logger.info("🚀 Bot polling da ishga tushdi!")
+        app.run_polling(
+            drop_pending_updates=True,
+            allowed_updates=Update.ALL_TYPES
+        )
 
 if __name__ == "__main__":
     main()
