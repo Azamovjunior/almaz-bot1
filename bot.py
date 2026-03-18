@@ -17,6 +17,8 @@ from telegram.ext import (
     Application, CommandHandler, MessageHandler, CallbackQueryHandler,
     filters, ContextTypes, ConversationHandler
 )
+from flask import Flask
+from threading import Thread
 
 load_dotenv()
 logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s", level=logging.INFO)
@@ -197,12 +199,7 @@ def ai_resp(uid, msg):
     except Exception as e: return f"❌ AI xatosi: {e}"
 
 # ==================== FIREBASE ====================
-import json
-_fb_creds = os.getenv("FIREBASE_CREDENTIALS")
-if _fb_creds:
-    cred = credentials.Certificate(json.loads(_fb_creds))
-else:
-    cred = credentials.Certificate("firebase_key.json")
+cred = credentials.Certificate("firebase_key.json")
 firebase_admin.initialize_app(cred)
 db = firestore.client()
 
@@ -1981,6 +1978,25 @@ async def skip_cmd(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data.pop("proof_w_id", None)
     await update.message.reply_text("✅ Isbot yuborish o'tkazib yuborildi.")
 
+# ==================== KEEP ALIVE (Railway uxlamasin) ====================
+flask_app = Flask(__name__)
+
+@flask_app.route('/')
+def home():
+    return "✅ Bot ishlayapti! 🚀"
+
+@flask_app.route('/health')
+def health():
+    return "OK", 200
+
+def run_flask():
+    flask_app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8080)))
+
+def keep_alive():
+    t = Thread(target=run_flask, daemon=True)
+    t.start()
+    logger.info("🌐 Flask server ishga tushdi!")
+
 # ==================== MAIN ====================
 def main():
     app = Application.builder().token(TELEGRAM_BOT_TOKEN).build()
@@ -2061,8 +2077,12 @@ def main():
     app.job_queue.run_repeating(remind_job,   interval=EARN_COOLDOWN,     first=60)
     app.job_queue.run_repeating(miss_you_job, interval=MISS_YOU_INTERVAL, first=120)
 
-    logger.info("Bot ishga tushdi!")
-    app.run_polling(drop_pending_updates=True)
+    keep_alive()
+    logger.info("🚀 Bot ishga tushdi!")
+    app.run_polling(
+        drop_pending_updates=True,
+        allowed_updates=Update.ALL_TYPES
+    )
 
 if __name__ == "__main__":
     main()
